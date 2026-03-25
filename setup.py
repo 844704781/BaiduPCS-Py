@@ -5,4 +5,7 @@
 import setuptools
 
 if __name__ == "__main__":
-    setuptools.setup(name="baidupcs-py")
+    setuptools.setup(
+        name="baidupcs-py",
+        packages=setuptools.find_packages(exclude=["imgs", "tests", "tests.*"]),
+    )
