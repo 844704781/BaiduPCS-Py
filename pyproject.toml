@@ -60,3 +60,4 @@ BaiduPCS-Py = 'baidupcs_py.app:main'
 
 [build-system]
 requires = ["poetry-core", "cython", "wheel", "setuptools"]
+build-backend = "poetry.core.masonry.api"
