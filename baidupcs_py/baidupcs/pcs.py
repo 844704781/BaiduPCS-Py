@@ -23,6 +23,7 @@ from baidupcs_py.common.url import is_magnet
 from baidupcs_py.baidupcs.errors import BaiduPCSError, parse_errno
 from baidupcs_py.baidupcs.phone import get_phone_model, sum_IMEI
 from baidupcs_py.baidupcs.errors import assert_ok
+from baidupcs_py.baidupcs.share import parse_shared_page
 from baidupcs_py.utils import dump_json
 
 
@@ -779,16 +780,12 @@ class BaiduPCS:
         assert self._stoken, "`STOKEN` is not in `cookies`"
 
         resp = self._request(Method.Get, shared_url, params=None)
-        html = resp.text
+        resp.raise_for_status()
 
         # These cookies must be included through all sub-processes
         self._cookies_update(resp.cookies.get_dict())
 
-        m = re.search(r"(?:yunData.setData|locals.mset)\((.+?)\);", html)
-        assert m, "`BaiduPCS.shared_paths`: Don't get shared info"
-
-        shared_data = m.group(1)
-        return json.loads(shared_data)
+        return parse_shared_page(resp.text)
 
     @assert_ok
     def list_shared_paths(self, sharedpath: str, uk: int, share_id: int, page: int = 1, size: int = 100):

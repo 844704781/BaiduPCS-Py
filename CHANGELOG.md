@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.7.8 - 2026-11-02
+
+### Fixed
+
+- Parse JSON script tags and multiline legacy share metadata without executing JavaScript.
+- Report unparseable share pages as a distinct SDK exception and preserve HTTP errors.
+- Preserve nonzero Baidu error codes (including 117 and 145) without exposing response credentials.
+- Synchronize the installed package version and runtime version.
+
 ## v0.7.6 - 2023-03-22
 
 ### Added

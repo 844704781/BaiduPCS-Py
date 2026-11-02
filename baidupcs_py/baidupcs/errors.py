@@ -122,6 +122,14 @@ class BaiduPCSError(Exception):
         super().__init__(message)
 
 
+class BaiduPCSShareParseError(BaiduPCSError):
+    """The share page did not contain usable metadata (not a Baidu errno)."""
+
+    def __init__(self):
+        super().__init__("Unable to parse shared page")
+        self.api = "shared_paths"
+
+
 def parse_errno(error_code: int, info: Any = None) -> Optional[BaiduPCSError]:
     if error_code != 0:
         mean = ERRORS.get(error_code, info or UNKNOWN_ERROR)
@@ -143,12 +151,12 @@ def assert_ok(func):
             error_code = 0
         error_code = int(error_code)
 
-        if error_code not in ERRORS:
-            err = parse_errno(error_code, str(info))
-        else:
-            err = parse_errno(error_code)
+        # Unknown responses may include XDUSS, bdstoken, or other credentials.
+        # Preserve the numeric code without embedding the response in exceptions.
+        err = parse_errno(error_code)
 
         if err:
+            err.api = func.__name__
             raise err
         return info
 
